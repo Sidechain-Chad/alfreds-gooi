@@ -54,6 +54,7 @@ class InvoicesController < ApplicationController
       end
 
       @invoice.calculate_total
+      @subscription = @invoice.subscription
       redirect_to invoice_path(@invoice), notice: 'Invoice was successfully updated.'
     else
       # Legacy behavior for issued_bags route

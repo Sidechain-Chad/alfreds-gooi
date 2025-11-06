@@ -95,21 +95,119 @@ class SubscriptionsControllerTest < ActionController::TestCase
     assert_equal aligned, created.start_date.to_date
   end
 
-  test "create renders :new with 422 when save fails" do
+  test "create raises error when previous subscription has invalid suburb" do
     params = {
-      subscription: { plan: "Standard", duration: 1, street_address: "x", suburb: "Rondebosch" },
-      og: "false", new: "true"
+      subscription: { plan: "Standard", duration: 1 },
+      og: "false",
+      new: "false"
     }
 
     # Force the new sub to fail validation by making the copied suburb invalid
     @prev.update_column(:suburb, "InvalidSuburb")
 
     @user.stub :referrals_as_referrer, @ref_stub do
-      InvoiceBuilder.stub :new, FakeInvoiceBuilder.new do
+      assert_raises(ActiveRecord::RecordInvalid) do
         post :create, params: params
       end
     end
+  end
 
-    assert_response :unprocessable_entity
+  test "OG user renewing 6-month subscription creates invoice with correct OG product (R720)" do
+    # Make user OG
+    @user.update!(og: true)
+
+    # Ensure the product exists
+    og_product = Product.find_or_create_by!(title: "Standard 6 month OG subscription") do |p|
+      p.price = 720.0
+      p.description = "6 month OG subscription"
+    end
+
+    params = {
+      subscription: { plan: "Standard", duration: 6 },
+      og: "true",
+      new: "false"
+    }
+
+    @user.stub :referrals_as_referrer, @ref_stub do
+      post :create, params: params
+    end
+
+    created = @user.subscriptions.order(created_at: :desc).first
+    assert_equal 6, created.duration, "Subscription duration should be 6 months"
+    assert_equal "Standard", created.plan, "Subscription plan should be Standard"
+
+    # Check invoice was created with correct product
+    invoice = created.invoices.order(created_at: :asc).last
+    assert_not_nil invoice, "Invoice should be created"
+
+    invoice_item = invoice.invoice_items.find_by(product: og_product)
+    assert_not_nil invoice_item, "Invoice should have Standard 6 month OG subscription product"
+    assert_equal 720.0, invoice_item.amount, "Invoice item amount should be R720"
+    assert_equal 1, invoice_item.quantity, "Invoice item quantity should be 1"
+
+    assert_redirected_to want_bags_subscription_path(created)
+  end
+
+  test "non-OG user renewing 3-month subscription creates invoice with correct standard product" do
+    # Ensure user is not OG
+    @user.update!(og: false)
+
+    # Ensure the product exists
+    standard_product = Product.find_or_create_by!(title: "Standard 3 month subscription") do |p|
+      p.price = 660.0
+      p.description = "3 month subscription"
+    end
+
+    params = {
+      subscription: { plan: "Standard", duration: 3 },
+      og: "false",
+      new: "false"
+    }
+
+    @user.stub :referrals_as_referrer, @ref_stub do
+      post :create, params: params
+    end
+
+    created = @user.subscriptions.order(created_at: :desc).first
+    assert_equal 3, created.duration, "Subscription duration should be 3 months"
+    assert_equal "Standard", created.plan, "Subscription plan should be Standard"
+
+    # Check invoice was created with correct product
+    invoice = created.invoices.order(created_at: :asc).last
+    assert_not_nil invoice, "Invoice should be created"
+
+    invoice_item = invoice.invoice_items.find_by(product: standard_product)
+    assert_not_nil invoice_item, "Invoice should have Standard 3 month subscription product"
+    assert_equal 660.0, invoice_item.amount, "Invoice item amount should be R660"
+    assert_equal 1, invoice_item.quantity, "Invoice item quantity should be 1"
+
+    assert_redirected_to want_bags_subscription_path(created)
+  end
+
+  test "renewal with discount code creates subscription with discount_code" do
+    # Ensure user is not OG
+    @user.update!(og: false)
+
+    # Ensure the product exists
+    Product.find_or_create_by!(title: "Standard 6 month subscription") do |p|
+      p.price = 1080.0
+      p.description = "6 month subscription"
+    end
+
+    params = {
+      subscription: { plan: "Standard", duration: 6, discount_code: "SUMMER2025" },
+      og: "false",
+      new: "false"
+    }
+
+    @user.stub :referrals_as_referrer, @ref_stub do
+      post :create, params: params
+    end
+
+    created = @user.subscriptions.order(created_at: :desc).first
+    assert_equal "SUMMER2025", created.discount_code, "Subscription should have discount code saved"
+    assert_equal 6, created.duration, "Subscription duration should be 6 months"
+
+    assert_redirected_to want_bags_subscription_path(created)
   end
 end

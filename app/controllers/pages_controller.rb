@@ -2,7 +2,7 @@ class PagesController < ApplicationController
   skip_before_action :authenticate_user!, only: [ :home, :story ]
 
   def home
-    @discount_code = params[:discount]
+    @discount_code = params[:discount_code]
     @interest = Interest.new
     if @discount_code.present?
       found_code = DiscountCode.find_by(code: @discount_code.upcase)

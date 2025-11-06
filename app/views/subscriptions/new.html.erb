@@ -16,6 +16,13 @@
     <% else %>
       <section>
         <div class="subscription-rates-update">
+          <% unless current_user.og %>
+            <div class="mb-4 p-3 text-center" style="background-color: #f8f9fa; border-radius: 8px; margin: 0 auto">
+              <label for="discount-code-input" class="form-label">Have a discount code?</label>
+              <input type="text" id="discount-code-input" class="form-control" placeholder="Enter code" style="max-width: 300px;">
+              <small class="text-muted">Optional - leave blank if you don't have one</small>
+            </div>
+          <% end %>
           <h2>Standard Subscriptions</h2>
           <p>Pick a duration for a weekly pick up of 1-2 bags of compostable waste</p>
           <% if current_user.og %>
@@ -120,3 +127,27 @@
     <% end %>
   </div>
 </div>
+
+<% unless current_user.og %>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const discountInput = document.getElementById('discount-code-input');
+      const forms = document.querySelectorAll('form[action="<%= subscriptions_path %>"]');
+
+      forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+          const discountCode = discountInput.value.trim();
+
+          if (discountCode) {
+            // Create hidden input for discount code
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'subscription[discount_code]';
+            hiddenInput.value = discountCode;
+            form.appendChild(hiddenInput);
+          }
+        });
+      });
+    });
+  </script>
+<% end %>

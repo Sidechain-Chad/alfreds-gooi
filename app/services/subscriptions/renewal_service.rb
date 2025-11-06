@@ -1,21 +1,18 @@
 # app/services/subscriptions/renewal_service.rb
-# Purpose: duplicate a user's last subscription and generate an invoice for the new one.
-# Usage: Subscriptions::RenewalService.call(user: user)
-#
-# Options:
-#   - plan_to_product (Hash or Proc): maps a plan (string/symbol) to a Product
-#     Example hash: { "Standard" => -> { Product.find_by(title: "Standard subscription") } }
+# Purpose: duplicate a user's last subscription with new params.
+# Usage: Subscriptions::RenewalService.new(user: user, new_params: {plan: 'Standard', duration: 6}).call
 #
 # Returns a Result object with:
-#   success? (bool), subscription, invoice, error (string)
+#   success? (bool), subscription, error (string)
+# Note: Does NOT create invoice - that's handled in controller after this returns
 
 module Subscriptions
   class RenewalService
-    Result = Struct.new(:success?, :subscription, :invoice, :error, keyword_init: true)
+    Result = Struct.new(:success?, :subscription, :error, keyword_init: true)
 
-    def initialize(user:, plan_to_product: nil)
-      @user            = user
-      @plan_to_product = plan_to_product
+    def initialize(user:, new_params: {})
+      @user       = user
+      @new_params = new_params
     end
 
     def call
@@ -38,29 +35,16 @@ module Subscriptions
             suburb: last_sub.business_profile.suburb,
             postal_code: last_sub.business_profile.postal_code
           )
-
         end
 
-        # Calculate referred friends for discount
-        referred_friends = @user.referrals_as_referrer.where(status: 'completed').count
-
-        # ⬇️ Use InvoiceBuilder with proper discount logic
-        invoice = InvoiceBuilder.new(
-          subscription: new_sub,
-          og:           @user.respond_to?(:og) ? @user.og : false,
-          is_new:       false,
-          referee:      nil,
-          referred_friends: referred_friends
-        ).call
-
-        return success!(subscription: new_sub, invoice: invoice)
+        return success!(subscription: new_sub)
       end
     end
 
     private
 
-    def success!(subscription:, invoice:)
-      Result.new(success?: true, subscription: subscription, invoice: invoice)
+    def success!(subscription:)
+      Result.new(success?: true, subscription: subscription)
     end
 
     def failure!(message)
@@ -68,17 +52,22 @@ module Subscriptions
     end
 
     def build_subscription_from(last_sub)
-      start_date      = (last_sub.end_date.presence || Time.zone.today).to_date + 1.day
-      duration_months = (last_sub.duration.presence || 1).to_i
-
+      # Duplicate subscription, copying address/location info but not plan/duration/status
       duped = last_sub.dup
+
+      # Apply new params from form (plan, duration, discount_code)
+      duped.assign_attributes(@new_params.slice(:plan, :duration, :discount_code))
+
+      # Set defaults for new subscription
       duped.assign_attributes(
-        start_date: start_date,
-        duration:   duration_months,
-        end_date:   start_date.advance(months: duration_months),
-        status:     (duped.respond_to?(:status) ? "pending" : nil),
-        is_paused:  (duped.respond_to?(:is_paused) ? false : nil)
+        status:           "pending",
+        is_paused:        false,
+        is_new_customer:  false,
+        start_date:       nil,  # Will be calculated in controller
+        end_date:         nil,  # Don't set end_date
+        collection_order: last_sub.collection_order  # Preserve collection order
       )
+
       duped.user = @user
       duped.customer_id ||= @user.customer_id
       duped

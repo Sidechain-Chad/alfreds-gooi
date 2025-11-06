@@ -8,7 +8,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def new
     @plan = params[:plan]
     @duration = params[:duration]
-    @discount_code = params[:discount] if params[:discount].present?
+    @discount_code = params[:discount_code] if params[:discount_code].present?
     @referral_code = params[:referral] if params[:referral].present?
 
 

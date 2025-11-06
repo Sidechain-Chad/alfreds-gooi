@@ -100,29 +100,39 @@ class SubscriptionsController < ApplicationController
   end
 
   def create
-    # Use RenewalService to duplicate last subscription with all associated data
-    result = Subscriptions::RenewalService.new(user: current_user).call
+    # Use RenewalService to duplicate last subscription with new params
+    result = Subscriptions::RenewalService.new(
+      user: current_user,
+      new_params: subscription_params
+    ).call
 
     if result.success?
       @subscription = result.subscription
-      @invoice = result.invoice
 
-      # Update subscription with form params (plan, duration, etc.) if provided
-    
-      @subscription.update!(subscription_params) if subscription_params.present?
+      # Calculate referred friends for invoice builder
+      referred_friends = current_user.referrals_as_referrer.where(status: 'completed').count
+
+      # Create invoice AFTER subscription has correct plan/duration
+      @invoice = InvoiceBuilder.new(
+        subscription: @subscription,
+        og: current_user.og,
+        is_new: false,
+        referee: nil,
+        referred_friends: referred_friends
+      ).call
 
       # check for sub overlap and set proper start date
       start_date = @subscription.suggested_start_date(payment_date: Date.current)
       @subscription.update!(start_date: start_date)
 
-      # Recalculate end_date based on new start date and duration
-      # @subscription.update!(end_date: start_date.advance(months: @subscription.duration))
-
       # check if future collections exist and move them to this sub
       @subscription.adopt_future_collections!
 
-      # check if the user wants bags
-      redirect_to want_bags_subscription_path(@subscription)
+      # # check if the user wants bags
+      # redirect_to want_bags_subscription_path(@subscription)
+
+      flash.now[:notice] = "Your subscription has been created and will be active once payment is made."
+      redirect_to invoice_path(@invoice)
     else
       flash[:alert] = result.error
       @subscription = Subscription.new(subscription_params)
@@ -135,6 +145,7 @@ class SubscriptionsController < ApplicationController
     @invoice = @subscription.invoices.order(created_at: :asc).last
     @compost_bags = Product.find_by(title: "Compost bin bags")
     @soil_bags = Product.find_by(title: "Soil for Life Compost")
+    flash.now[:notice] = "Your subscription has been created and will be active once payment is made."
   end
 
   def edit
@@ -213,8 +224,6 @@ class SubscriptionsController < ApplicationController
   rescue => e
     redirect_to admin_user_path(subscription.user), alert: "Reassign error: #{e.class} #{e.message}"
   end
-
-
 
   def welcome
     @subscription = Subscription.find(params[:id])
@@ -358,7 +367,6 @@ class SubscriptionsController < ApplicationController
     # Combine collections and drop-off events, sorted by position
     @route_items = (collections.to_a + drop_off_events.to_a).sort_by(&:position)
   end
-
 
   def recently_lapsed
     # Find driver's day

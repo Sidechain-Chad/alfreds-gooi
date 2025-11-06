@@ -2,9 +2,10 @@
   position: relative;
   background-image: url('header-gooi-3.png');
   background-size: cover;
-  height: 90vh;
+  height: 72vh;
   width: 100%;
   background-repeat: no-repeat;
+
   h1 {
     font-size: 2rem;
     padding-top: 1rem;
@@ -13,8 +14,6 @@
   .blog-header-subheader {
     margin-bottom: 2rem;
   }
-
-
 
   .inner-header-container {
     margin: 0 10%;
@@ -35,7 +34,7 @@
     font-size: 3rem;
     color: white;
     text-align: center;
-    padding-top: 15vh;
+    padding-top: 8vh;
     margin-bottom: 1vh;
   }
 
@@ -46,4 +45,86 @@
     color: white;
     text-align: center;
   }
+}
+
+.farm-images-container {
+  margin: 5%;
+
+  .farm-image {
+    width: 100%;
+    margin-left: 0;
+
+    img {
+      width: 100%;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 14px;
+      max-height: 40vh;
+    }
+
+  }
+}
+
+.farm-text-img-flex {
+  margin: 5% 5%;
+
+  h1 {
+    margin-top: 1rem;
+  }
+
+  .text-container {
+    width: 100%;
+  }
+
+  .images-container {
+    width: 100%;
+  }
+
+  p {
+
+    color: black;
+  }
+
+  .flex-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+  }
+
+
+}
+
+.farm-social-link {
+  display: flex;
+  align-items: center;
+  margin: 1rem 0;
+  height: 2vh;
+  color: $dark-green;
+
+  i {
+    font-size: 1.8rem;
+  }
+
+}
+
+
+@media screen and (max-width:768px) {
+  .blog-text-section {
+    margin: 0 10%;
+  }
+
+  .farm-page-header {
+    height: 90vh;
+
+    h1 {
+      padding-top: 3vh
+    }
+
+    p {
+      font-size: 1rem
+    }
+  }
+
 }

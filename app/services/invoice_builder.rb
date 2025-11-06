@@ -21,8 +21,8 @@ class InvoiceBuilder
 
     apply_referrals(invoice)
     invoice.calculate_total
-
     apply_discount_code(invoice) if @subscription.discount_code
+
     InvoiceMailer.with(invoice: invoice).invoice_created.deliver_now
 
 
@@ -38,10 +38,10 @@ class InvoiceBuilder
 
   def add_subscription_product(invoice)
     title = if @og
-      "#{@subscription.plan} #{@subscription.duration} month OG subscription"
-    else
-      "#{@subscription.plan} #{@subscription.duration} month subscription"
-    end
+              "#{@subscription.plan} #{@subscription.duration} month OG subscription"
+            else
+              "#{@subscription.plan} #{@subscription.duration} month subscription"
+            end
 
     product = Product.find_by(title: title)
     raise "Product not found: #{title}" unless product
@@ -74,7 +74,6 @@ class InvoiceBuilder
   end
 
   def apply_discount_code(invoice)
-
     code = DiscountCode.find_by(code: @subscription.discount_code.upcase)
 
     if code&.available?

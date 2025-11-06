@@ -30,20 +30,13 @@
           ></use>
         </g>
       </svg>
+
     </div>
   </section>
 
   <!-- Image and Impact Stats -->
-  <section class="blog-text-img-flex">
+  <section class="farm-text-img-flex">
     <div class="flex-wrapper">
-      <% if @farm.photo.attached? %>
-        <div class="images-container">
-          <div class="img-1">
-            <%= image_tag @farm.photo, class: 'mission-image', alt: @farm.name %>
-          </div>
-        </div>
-      <% end %>
-
       <div class="text-container">
         <h1>Our Impact Together<span class="yellow-txt">.</span></h1>
         <p class="mb-3">
@@ -63,13 +56,21 @@
     </div>
   </section>
 
+  <% if @farm.photo.attached? %>
+    <div class="farm-images-container">
+      <div class="img-1 farm-image">
+        <%= image_tag @farm.photo, alt: @farm.name %>
+      </div>
+    </div>
+  <% end %>
+
   <!-- Neighborhoods Served -->
-  <section class="blog-text-section">
+  <section class="blog-text-section mt-3">
     <h1>Neighborhoods Served<span class="yellow-txt">.</span></h1>
     <p class="blog-paragraph-content">
       Every <%= @farm.collection_day %>, Alfred collects organic waste from these neighborhoods and delivers it to <%= @farm.name %>:
     </p>
-    <div class="row mt-4">
+    <div class="row mt-4" style="margin: 0 4%">
       <% @farm.served_suburbs.each_slice((@farm.served_suburbs.size / 3.0).ceil) do |suburb_group| %>
         <div class="col-md-4">
           <ul class="list-unstyled">
@@ -85,7 +86,7 @@
   <!--Call to sign up-->
   <div class="yellow-block">
     <h3>Want to add your kitchen scraps to the next compost pile?</h3>
-    <div class="mt-5 mb-3">
+    <div class="mt-4 mb-3">
       <%= link_to 'Sign Up', root_path(anchor: "pricing"), class: 'btn-gooi' %>
     </div>
   </div>
@@ -117,55 +118,54 @@
 
   <!-- Social Links and Website -->
   <!-- Location and Contact -->
-  <section class="blog-text-section mt-5">
+  <section class="blog-text-section my-5">
     <h1>Connect with <%= @farm.name %><span class="yellow-txt">.</span></h1>
-    <h3>Location</span></h3>
-    <div class="d-flex">
+    <% if @farm.website.present? || @farm.instagram_handle.present? || @farm.facebook_url.present? %>
+      <section class="blog-text-section">
+        <div class="d-flex justify-content-between gap-4 mt-4">
+          <% if @farm.website.present? %>
+            <%= link_to @farm.website, target: "_blank", class: "text-decoration-none" do %>
+              <div class="farm-social-link">
+                <i class="fa-solid fa-globe fa-2x me-2"></i>
+                <span>Visit Website</span>
+              </div>
+            <% end %>
+          <% end %>
+
+          <% if @farm.instagram_handle.present? %>
+            <%= link_to "https://instagram.com/#{@farm.instagram_handle}", target: "_blank", class: "text-decoration-none" do %>
+              <div class="farm-social-link">
+                <i class="fa-brands fa-instagram fa-2x me-2"></i>
+                <span>@<%= @farm.instagram_handle %></span>
+              </div>
+            <% end %>
+          <% end %>
+
+          <% if @farm.facebook_url.present? %>
+            <%= link_to @farm.facebook_url, target: "_blank", class: "text-decoration-none" do %>
+              <div class="farm-social-link">
+                <i class="fa-brands fa-facebook fa-2x me-2"></i>
+                <span>Follow on Facebook</span>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+    <div class="d-flex mt-4">
       <p class="blog-paragraph-content w-75">
         <%= @farm.name %> can be found in <%= @farm.suburb %>. Feel free to pop in and connect with the soil, the farmers and the produce.
       </p>
 
       <% if @farm.latitude.present? && @farm.longitude.present? %>
-        <div class="mt-4 w-25">
-          <%= link_to "View on Google Maps",
+        <div class="mt-2 w-25">
+          <%= link_to "Google Maps",
               "https://maps.google.com/?q=#{@farm.latitude},#{@farm.longitude}",
               target: "_blank",
-              class: "btn-gooi-green" %>
+              class: "btn-gooi-green mb-2" %>
         </div>
       <% end %>
     </div>
   </section>
 
-  <% if @farm.website.present? || @farm.instagram_handle.present? || @farm.facebook_url.present? %>
-    <section class="blog-text-section">
-      <div class="d-flex gap-4 mt-4">
-        <% if @farm.website.present? %>
-          <%= link_to @farm.website, target: "_blank", class: "text-decoration-none" do %>
-            <div class="d-flex align-items-center">
-              <i class="fa-solid fa-globe fa-2x me-2" style="color: #1f4632;"></i>
-              <span style="color: #1f4632; font-size: 1.1rem;">Visit Website</span>
-            </div>
-          <% end %>
-        <% end %>
-
-        <% if @farm.instagram_handle.present? %>
-          <%= link_to "https://instagram.com/#{@farm.instagram_handle}", target: "_blank", class: "text-decoration-none" do %>
-            <div class="d-flex align-items-center">
-              <i class="fa-brands fa-instagram fa-2x me-2" style="color: #1f4632;"></i>
-              <span style="color: #1f4632; font-size: 1.1rem;">@<%= @farm.instagram_handle %></span>
-            </div>
-          <% end %>
-        <% end %>
-
-        <% if @farm.facebook_url.present? %>
-          <%= link_to @farm.facebook_url, target: "_blank", class: "text-decoration-none" do %>
-            <div class="d-flex align-items-center">
-              <i class="fa-brands fa-facebook fa-2x me-2" style="color: #1f4632;"></i>
-              <span style="color: #1f4632; font-size: 1.1rem;">Follow on Facebook</span>
-            </div>
-          <% end %>
-        <% end %>
-      </div>
-    </section>
-  <% end %>
 </div>

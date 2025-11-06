@@ -14,6 +14,9 @@ class ActiveSupport::TestCase
   Geocoder::Lookup::Test.set_default_stub(
     [{ "latitude" => -33.96, "longitude" => 18.48, "address" => "Test Address" }]
   )
+
+  # Configure default URL options for mailers in tests
+  Rails.application.routes.default_url_options[:host] = 'test.host'
 end
 
 # Controller tests (ActionController::TestCase)
