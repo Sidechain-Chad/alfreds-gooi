@@ -1,92 +1,133 @@
-<div class="invoice-email-container" style="width: 100%; max-width: 701px; margin: 0 auto; font-family: system-ui; color: #333; border-radius: 6px; overflow: hidden;">
-
-<style>
-  @media only screen and (max-width: 600px) {
-    .invoice-email-container {
-      max-width: 100% !important;
-      border-radius: 0 !important;
+<table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; color: #333333;">
+  <!-- Mobile Styles -->
+  <style type="text/css">
+    @media only screen and (max-width: 600px) {
+      .mobile-full-width { width: 100% !important; }
+      .mobile-padding { padding: 16px !important; }
+      .mobile-text-center { text-align: center !important; }
+      .mobile-stack { display: block !important; width: 100% !important; }
+      .mobile-spacing { padding: 8px 0 !important; }
+      .mobile-header-padding { padding: 15px !important; }
+      .mobile-body-padding { padding: 24px 16px !important; }
+      .mobile-font-large { font-size: 20px !important; }
+      .mobile-font-medium { font-size: 14px !important; }
+      .mobile-button { padding: 10px 20px !important; font-size: 14px !important; display: block !important; }
+      .mobile-details { max-width: 100% !important; padding: 16px !important; }
     }
+  </style>
 
-    .email-header {
-      padding: 16px 12px !important;
-      margin: 0 !important;
-      gap: 8px !important;
-    }
+  <!-- Header -->
+  <tr>
+    <td bgcolor="#FFFFFF" style="padding: 20px; border-bottom: 1px solid #e5e5e5;" class="mobile-header-padding">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="50%" align="left" style="vertical-align: middle;" class="mobile-stack mobile-text-center mobile-spacing">
+            <a href="https://www.gooi.me/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+              <%= image_tag('gooi_logo_CR.png', alt: "Gooi", style: "width: 100px; height: auto; border: 0; display: block;") %>
+            </a>
+          </td>
+          <td width="50%" align="right" style="vertical-align: middle;" class="mobile-stack mobile-text-center mobile-spacing">
+            <a href="https://www.instagram.com/gooi_capetown/" target="_blank" rel="noopener noreferrer"
+              style="background: #f5b11a; color: #ffffff; padding: 8px 14px; text-decoration: none; border-radius: 4px; font-size: 14px; font-weight: 500; font-family: Arial, sans-serif; display: inline-block;"
+              class="mobile-button">
+              <!-- Instagram SVG with inline spacing -->
+              <table border="0" cellspacing="0" cellpadding="0" style="display: inline-block; vertical-align: middle;">
+                <tr>
+                  <td style="padding-right: 8px; vertical-align: middle;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display: block; vertical-align: middle;">
+                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                  </td>
+                  <td style="vertical-align: middle;">
+                    Follow Us
+                  </td>
+                </tr>
+              </table>
+            </a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
 
-    .email-body {
-      width: 100% !important;
-      max-width: 100% !important;
-    }
+  <!-- Body Content -->
+  <tr>
+    <td bgcolor="#FFFFFF" style="padding: 32px 20px;" class="mobile-body-padding">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <!-- Title -->
+        <tr>
+          <td align="left" style="padding: 0 0 16px 0;">
+            <h1 style="margin:0; font-size: 24px; font-weight: 600; color: #1f2937; font-family: Arial, sans-serif;" class="mobile-font-large">
+              Your invoice is ready
+            </h1>
+          </td>
+        </tr>
 
-    .invoice-item {
-      padding: 24px 16px !important;
-    }
-
-    h1 {
-      font-size: 20px !important;
-    }
-
-    .follow-button {
-      font-size: 12px !important;
-      padding: 6px 10px !important;
-      white-space: nowrap !important;
-    }
-  }
-</style>
-    <div class="email-header" style="background: #ffffff; border-bottom: 1px solid #e5e5e5; padding: 16px; display: flex; justify-content: space-between; align-items: center; height: auto; min-height: 80px; margin: 10px;">
-      <div style="display: flex; align-items: center;">
-        <a href="https://www.gooi.me/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
-            <%= image_tag('gooi_logo_CR.png', alt: "Gooi", style: "margin: auto; padding: 0; width: 100px; height: auto;") %>
-        </a>
-      </div>
-       <div>
-        <a class="follow-button" target="_blank" rel="noopener noreferrer" href="https://www.instagram.com/gooi_capetown/" style="background: rgb(245 177 26); color: rgba(255, 255, 255, 1); padding: 8px 14px; text-decoration: none; border-radius: 4px; font-size: 14px; font-weight: 500; font-family: Manrope-Medium, sans-serif; display: flex; align-items: center; gap: 8px; justify-content: center;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display: block;">
-            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-          </svg>
-          Follow Us
-        </a>
-       </div>
-    </div>
-
-    <div class="email-body" style="max-width: 701px; width: 100%; margin: 0 auto; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;">
-
-        <div class="invoice-item" style="padding: 32px; margin: 0 auto;">
-          <h1 style="margin:0 0 16px; font-size: 24px; font-weight: 600; color: #1f2937;">Your invoice is ready</h1>
-
-          <% if @user %>
-            <p style="margin:0 0 20px; font-size: 16px; color: #6b7280; line-height: 1.5;">Hi <%= @user.first_name || @user.email %>,</p>
-          <% end %>
-
-          <div style="background: #f8fafc; border-radius: 8px; padding: 20px; margin: 0 0 24px 0; width: auto;">
-            <p style="margin:0 0 12px; font-size: 15px; color: #374151;">
-              Your invoice <strong style="color: #1f2937;">#<%= @invoice.number || @invoice.id %></strong> has been generated.
+        <!-- Greeting -->
+        <% if @user %>
+        <tr>
+          <td align="left" style="padding: 0 0 16px 0;" class="mobile-text-center">
+            <p style="margin:0; font-size: 16px; color: #6b7280; line-height: 1.5; font-family: Arial, sans-serif;" class="mobile-font-medium">
+              Hi <%= @user.first_name || @user.email %>,
             </p>
+          </td>
+        </tr>
+        <% end %>
 
-            <div style="display: grid; gap: 8px;">
-              <p style="margin:0; font-size: 15px; color: #374151;">
-                <strong style="color: #1f2937;">Total:</strong> R<%= number_with_precision(@invoice.total_amount.to_f, precision: 2) %>
-              </p>
-              <p style="margin:0; font-size: 15px; color: #374151;">
-                <strong style="color: #1f2937;">Due:</strong> <%= @invoice.due_date&.strftime('%e %b %Y') %>
-              </p>
-            </div>
-          </div>
+        <!-- Invoice Details Box -->
+        <tr>
+          <td align="center" style="padding: 0 0 24px 0;">
+            <table width="100%" border="0" cellspacing="0" cellpadding="20" bgcolor="#f8fafc" style="border-radius: 8px; max-width: 500px;" class="mobile-details">
+              <tr>
+                <td align="left" style="font-family: Arial, sans-serif;">
+                  <p style="margin:0 0 12px 0; font-size: 15px; color: #374151;" class="mobile-font-medium">
+                    Your invoice <strong style="color: #1f2937;">#<%= @invoice.number || @invoice.id %></strong> has been generated.
+                  </p>
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td style="padding: 4px 0; font-size: 15px; color: #374151;" class="mobile-font-medium">
+                        <strong style="color: #1f2937;">Total:</strong> R<%= number_with_precision(@invoice.total_amount.to_f, precision: 2) %>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 4px 0; font-size: 15px; color: #374151;" class="mobile-font-medium">
+                        <strong style="color: #1f2937;">Due:</strong> <%= @invoice.due_date&.strftime('%e %b %Y') %>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
 
-      <div style="text-align: center; margin: 0 0 32px 0;">
-        <a href="<%= invoice_url(@invoice) %>"
-          style="display:inline-block;padding:12px 24px; text-decoration:none; border-radius:6px; background:#1a7f37; color:white; font-weight:500; font-size:15px;">
-          View Invoice
-        </a>
-      </div>
+        <!-- CTA Button -->
+        <tr>
+          <td align="center" style="padding: 0 0 32px 0;">
+            <a href="<%= invoice_url(@invoice) %>"
+               style="background: #023F3A; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 15px; display: inline-block; font-family: Arial, sans-serif;"
+               class="mobile-button">
+              View Invoice
+            </a>
+          </td>
+        </tr>
 
-      <p style="margin:0; color:#9ca3af; font-size:14px; text-align:center;">
-        With appreciation,<br><strong style="color:#6b7280;">Gooi</strong>
-      </p>
-    </div>
+        <!-- Signature -->
+        <tr>
+          <td align="center">
+            <p style="margin:0; color: #9ca3af; font-size: 14px; font-family: Arial, sans-serif;" class="mobile-font-medium">
+              With appreciation,<br>
+              <strong style="color: #6b7280;">Gooi</strong>
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
 
-      <hr style="border:none;border-top:1px solid #e5e5e5;margin:0px 0;">
-
-    </div>
-
-</div>
+<!-- Footer -->
+<tr>
+  <td bgcolor="#FFFFFF" style="padding: 20px; border-top: 1px solid #e5e5e5;">
+  </td>
+</tr>
+</table>
